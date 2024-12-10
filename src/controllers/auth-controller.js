@@ -3,19 +3,16 @@ import { findUserByEmail } from '../models/auth-model.js';
 import bcrypt from 'bcrypt';
 
 // 로그인 페이지 렌더링
-const loginPage = (req, res) => {
-    res.render('login');
-};
+export const loginPage = (req, res) => res.render('login');
+
 // 회원가입 페이지 렌더링
-const signUpPage = (req, res) => {
-    res.render('signup', {emailError: null, pwError: null, pw2Error: null});
-};
+export const signUpPage = (req, res) => res.render('signup');
+
 
 // 회원가입 기능
-const signUp = async (req, res) => {
+export const signUp = async (req, res) => {
     try {
         const { email, password } = req.body;
-
         const existingUser = await findUserByEmail(email);
 
         if (existingUser) {
@@ -24,14 +21,18 @@ const signUp = async (req, res) => {
 
         const user = await createUser( { email, password });
 
-        res.status(200).json({ message: '회원가입 성공', redirectUrl: '/auth/login'});
+        res.status(200).json({
+            message: '회원가입 성공',
+            redirectUrl: '/auth/login'
+        });
     } catch (error) {
         console.error('회원가입 중 오류 발생 : ', error);
         res.status(500).json({ error: '서버 오류가 발생했습니다.' });
     }
 };
 
-const login = async (req, res) => {
+// 로그인 기능
+export const login = async (req, res) => {
     try{
         const { email, password } = req.body;
 
@@ -51,11 +52,22 @@ const login = async (req, res) => {
 
         req.session.user = { id: user.id, email: user.email };
 
-        res.status(200).json({ message: '로그인 성공', redirectUrl: '/'});
+        res.status(200).json({
+            message: '로그인 성공',
+            redirectUrl: '/'
+        });
     } catch (error) {
         console.error('로그인 중 오류 발생:', error);
         res.status(500).json({ error: '서버 오류가 발생했습니다.' });
     }
-}
+};
 
-export {loginPage, signUpPage, signUp, login}
+export const logout = async (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('세션 삭제 중 오류 발생:', err);
+            return res.status(500).json({ error: '로그아웃 중 오류가 발생했습니다.' });
+        }
+        res.redirect('/auth/login'); // 로그인 페이지로 리다이렉트
+    });
+};
