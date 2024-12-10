@@ -597,7 +597,7 @@
                 <div class="modal-body">다음에 또 만나요~!</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-                    <a class="btn btn-primary" href="login.html">로그아웃</a>
+                    <a class="btn btn-primary" id="logoutButton" href="/auth/logout">로그아웃</a>
                 </div>
             </div>
         </div>
@@ -620,6 +620,30 @@
     <script src="/js/demo/chart-area-demo.js"></script>
     <script src="/js/demo/chart-pie-demo.js"></script>
 
+    <script>
+        document.querySelector('#logoutButton').addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                window.location.href = '/auth/login';
+            } else {
+                const errorData = await response.json();
+                alert(`로그아웃 실패: ${errorData.error}`);
+            }
+        } catch (error) {
+            console.error('로그아웃 중 오류 발생:', error);
+            alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+        });
+    </script>
 </body>
 
 </html>

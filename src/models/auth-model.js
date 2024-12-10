@@ -10,7 +10,6 @@ export const saveUser = async ({ email, password }) => {
             `;
         const values = [email, password];
         const result = await pool.query(query, values);
-
         return result.rows[0];
     } catch (error) {
         console.error('Error saving user:', error);
@@ -27,7 +26,6 @@ export const findUserByEmail = async (email) => {
         `;
         const values = [email];
         const result = await pool.query(query, values);
-
         return result.rows[0];
     } catch (error) {
         console.error('Email로 유저를 찾는중에 오류가 생겼습니다 : ', error);

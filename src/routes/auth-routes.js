@@ -1,5 +1,11 @@
 import express from 'express'
-import {loginPage, signUpPage, signUp, login} from '../controllers/auth-controller.js'
+import {
+    loginPage,
+    signUpPage,
+    signUp,
+    login,
+    logout
+} from '../controllers/auth-controller.js'
 
 const router = express.Router();
 
@@ -15,5 +21,7 @@ router.get('/signup', signUpPage);
 router.post('/signup', signUp);
 // 로그인 기능
 router.post('/login', login);
+
+router.post('/logout', logout);
 
 export default router;
